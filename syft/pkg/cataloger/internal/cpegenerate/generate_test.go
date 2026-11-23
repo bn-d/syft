@@ -903,6 +903,32 @@ func TestGeneratePackageCPEs(t *testing.T) {
 			expected: []string{},
 		},
 		{
+			name: "opam package that NVD knows generates its curated CPEs",
+			p: pkg.Package{
+				Name:     "ocaml",
+				Version:  "5.3.0",
+				Type:     pkg.OpamPkg,
+				Language: pkg.OCaml,
+				Metadata: pkg.OpamPackage{Name: "ocaml", Version: "5.3.0"},
+			},
+			expected: []string{
+				"cpe:2.3:a:ocaml:ocaml:5.3.0:*:*:*:*:*:*:*",
+				"cpe:2.3:a:inria:ocaml:5.3.0:*:*:*:*:*:*:*",
+			},
+		},
+		{
+			// a guessed cpe:2.3:a:fmt:fmt matches CVE-2018-1000052, which is for the C++ {fmt} library
+			name: "other opam packages should generate no CPEs",
+			p: pkg.Package{
+				Name:     "fmt",
+				Version:  "0.11.0",
+				Type:     pkg.OpamPkg,
+				Language: pkg.OCaml,
+				Metadata: pkg.OpamPackage{Name: "fmt", Version: "0.11.0"},
+			},
+			expected: []string{},
+		},
+		{
 			name: "terraform provider generates NVD terraform_provider CPEs not application CPEs",
 			p: pkg.Package{
 				Name:     "registry.terraform.io/grafana/grafana",
